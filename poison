@@ -1,0 +1,46 @@
+#!/bin/bash
+clear
+cat style
+echo " "
+echo "Made by: @hippi3c0w"
+echo "Last update: 02.02.2019"
+
+function usage(){
+echo "project                   -                       Name of the app project to analyze"
+echo "help                      -                       Show all the available commands"
+}
+
+op=""
+while [[ $op != "exit" ]]
+do
+read -p "poison> " op
+
+        if [[ $op == help ]];then
+                usage
+        fi
+command=`echo $op | cut -d " " -f1`
+command2=`echo $op | cut -d " " -f2`
+#echo $command2
+        if [[ $command == project ]]; then
+
+                #permissions=`cat /root/$command2/AndroidManifest.xml |grep "permission" |cut -d "=" -f2 | cut -d "/" -f1 | cut -d ">" -f1`
+                npermissions=`cat /root/$command2/AndroidManifest.xml |grep "permission" |cut -d "=" -f2 | cut -d "/" -f1 | cut -d ">" -f1|wc -l`
+                permissions=`cat /root/uber/AndroidManifest.xml |grep "permission" |cut -d "=" -f2 | cut -d "/" -f1 | cut -d ">" -f1 |grep -v "com." |cut -d "." -f3 | cut -d '"' -f1`
+                echo $permissions>test1.txt
+                mkdir -p /var/www/html/$command2
+                echo "<h2>Permissions of app $command2</h2>">>/var/www/html/$command2/index.html
+                echo "<h3>Number of permissions: $npermissions</h3>">>/var/www/html/$command2/index.html
+                echo " " >>/var/www/html/$command2/index.html
+
+                for i in $(cat test1.txt)
+                do
+                echo   "<a href='https://developer.android.com/reference/android/Manifest.permission.html#$i'>$i</a>">>/var/www/html/$command2/index.html
+
+                echo   "<br>">>/var/www/html/$command2/index.html
+                done
+
+
+                #mkdir -p /var/www/html/$command2
+        fi
+
+done
